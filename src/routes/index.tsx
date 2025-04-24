@@ -6,6 +6,7 @@ import { ScheduleManager } from '@/components/Schedule/ScheduleManager';
 import NotFound from '@/pages/NotFound';
 import Index from '@/pages/Index';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
+import Employees from '@/pages/Employees';
 
 export const router = createBrowserRouter([
   {
@@ -14,7 +15,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <Dashboard />,
+    element: <DashboardLayout><Dashboard /></DashboardLayout>,
+  },
+  {
+    path: "/employees",
+    element: <DashboardLayout><EmployeeList /></DashboardLayout>,
   },
   {
     path: "/profile",
