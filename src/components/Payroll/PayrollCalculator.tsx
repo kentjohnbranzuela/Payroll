@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,7 +21,6 @@ import {
 } from '@/lib/utils';
 import { toast } from 'sonner';
 
-// Get the dates for common pay periods (15th and end of month)
 const getCurrentPayPeriod = () => {
   const today = new Date();
   const year = today.getFullYear();
@@ -32,13 +30,11 @@ const getCurrentPayPeriod = () => {
   let startDate: Date, endDate: Date;
   
   if (day <= 15) {
-    // First half of month period
     startDate = new Date(year, month, 1);
     endDate = new Date(year, month, 15);
   } else {
-    // Second half of month period
     startDate = new Date(year, month, 16);
-    endDate = new Date(year, month + 1, 0); // Last day of current month
+    endDate = new Date(year, month + 1, 0);
   }
   
   return {
@@ -47,23 +43,19 @@ const getCurrentPayPeriod = () => {
   };
 };
 
-// Generate a list of pay periods for selection
 const generatePayPeriods = () => {
   const periods = [];
   const today = new Date();
   
-  // Generate 6 past periods
   for (let i = 0; i < 6; i++) {
     const date = new Date(today);
     date.setMonth(today.getMonth() - i);
     
-    // First half of month
     periods.push({
       label: `${date.toLocaleDateString('en-US', { month: 'short' })} 1-15, ${date.getFullYear()}`,
       value: `${formatDate(new Date(date.getFullYear(), date.getMonth(), 1))}_${formatDate(new Date(date.getFullYear(), date.getMonth(), 15))}`
     });
     
-    // Second half of month
     const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
     periods.push({
       label: `${date.toLocaleDateString('en-US', { month: 'short' })} 16-${lastDay}, ${date.getFullYear()}`,
@@ -98,11 +90,9 @@ export const PayrollCalculator: React.FC = () => {
   const loadAttendanceRecords = (employeeId: string, start: string, end: string): AttendanceRecord[] => {
     let records: AttendanceRecord[] = [];
     
-    // Convert dates to Date objects for comparison
     const startDate = new Date(start);
     const endDate = new Date(end);
     
-    // Loop through each day in the date range
     let currentDate = new Date(startDate);
     while (currentDate <= endDate) {
       const dateString = formatDate(currentDate);
@@ -113,7 +103,6 @@ export const PayrollCalculator: React.FC = () => {
         records = [...records, ...JSON.parse(savedRecords)];
       }
       
-      // Move to next day
       currentDate.setDate(currentDate.getDate() + 1);
     }
     
@@ -127,29 +116,24 @@ export const PayrollCalculator: React.FC = () => {
     
     const [startDate, endDate] = selectedPeriod.split('_');
     
-    // Check if payroll data already exists for this period
     const existingPayroll = localStorage.getItem(`payroll_${selectedEmployee}_${selectedPeriod}`);
     if (existingPayroll) {
       setPayrollData(JSON.parse(existingPayroll));
       return;
     }
     
-    // Load attendance records for the period
     const records = loadAttendanceRecords(selectedEmployee, startDate, endDate);
     setAttendanceRecords(records);
     
-    // Calculate payroll if records exist
     if (records.length > 0) {
       calculatePayroll(records, startDate, endDate);
     }
   };
   
   const calculatePayroll = (records: AttendanceRecord[], startDate: string, endDate: string) => {
-    // Find the employee
     const employee = allUsers.find(user => user.id === selectedEmployee);
     if (!employee) return;
     
-    // Calculate total hours
     let totalRegularHours = 0;
     let totalOvertimeHours = 0;
     
@@ -157,7 +141,6 @@ export const PayrollCalculator: React.FC = () => {
       if (record.timeIn && record.timeOut) {
         const hoursWorked = record.hoursWorked || calculateHours(record.timeIn, record.timeOut);
         
-        // Assume standard 8-hour workday
         const regularHours = Math.min(8, hoursWorked);
         const overtimeHours = Math.max(0, hoursWorked - 8);
         
@@ -166,34 +149,28 @@ export const PayrollCalculator: React.FC = () => {
       }
     });
     
-    // Calculate gross pay
     const hourlyRate = employee.hourlyRate || getHourlyRateByPosition(employee.position as EmployeePosition);
-    const overtimeRate = hourlyRate * 1.25; // 25% overtime premium
+    const overtimeRate = hourlyRate * 1.25;
     
     const regularPay = totalRegularHours * hourlyRate;
     const overtimePay = totalOvertimeHours * overtimeRate;
     const grossPay = regularPay + overtimePay;
     
-    // Calculate deductions (monthly basis, simplified)
-    // Note: In a real app, you would need more sophisticated calculations
-    const monthlySalary = grossPay * 2; // Estimate monthly salary (assuming 2 pay periods per month)
+    const monthlySalary = grossPay * 2;
     
     const sssContribution = calculateSSS(monthlySalary);
     const philhealthContribution = calculatePhilHealth(monthlySalary);
     const pagibigContribution = calculatePagIbig(monthlySalary);
     const taxWithholding = calculateWithholdingTax(monthlySalary);
     
-    // Prorate for this pay period
     const sss = sssContribution / 2;
     const philhealth = philhealthContribution / 2;
     const pagibig = pagibigContribution / 2;
     const tax = taxWithholding / 2;
     
-    // Calculate net pay
     const totalDeductions = sss + philhealth + pagibig + tax;
     const netPay = grossPay - totalDeductions;
     
-    // Create payroll item
     const payrollItem: PayrollItem = {
       id: generateMockId(),
       employeeId: employee.id,
@@ -212,16 +189,15 @@ export const PayrollCalculator: React.FC = () => {
       status: 'processed'
     };
     
-    // Save to state and localStorage
     setPayrollData(payrollItem);
     localStorage.setItem(`payroll_${selectedEmployee}_${selectedPeriod}`, JSON.stringify(payrollItem));
   };
   
   const processPayout = () => {
     if (payrollData) {
-      const updatedPayroll = {
+      const updatedPayroll: PayrollItem = {
         ...payrollData,
-        status: 'paid'
+        status: 'paid' as const
       };
       
       setPayrollData(updatedPayroll);
@@ -235,7 +211,6 @@ export const PayrollCalculator: React.FC = () => {
     return employee?.name || 'Unknown Employee';
   };
   
-  // Format number as PHP currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-PH', {
       style: 'currency',

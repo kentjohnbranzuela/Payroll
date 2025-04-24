@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { calendar, clock, fileText, user, users } from 'lucide-react';
+import { Calendar, Clock, FileText, User, Users } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface DashboardLayoutProps {
@@ -45,7 +45,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                 className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 onClick={() => navigate('/dashboard')}
               >
-                <clock className="mr-2 h-4 w-4" />
+                <Clock className="mr-2 h-4 w-4" />
                 Time Clock
               </Button>
               
@@ -56,7 +56,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                     className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                     onClick={() => navigate('/employees')}
                   >
-                    <users className="mr-2 h-4 w-4" />
+                    <Users className="mr-2 h-4 w-4" />
                     Employees
                   </Button>
                   
@@ -65,7 +65,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                     className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                     onClick={() => navigate('/payroll')}
                   >
-                    <fileText className="mr-2 h-4 w-4" />
+                    <FileText className="mr-2 h-4 w-4" />
                     Payroll
                   </Button>
                 </>
@@ -76,7 +76,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                 className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 onClick={() => navigate('/schedule')}
               >
-                <calendar className="mr-2 h-4 w-4" />
+                <Calendar className="mr-2 h-4 w-4" />
                 Schedule
               </Button>
               
@@ -85,7 +85,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) =>
                 className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 onClick={() => navigate('/profile')}
               >
-                <user className="mr-2 h-4 w-4" />
+                <User className="mr-2 h-4 w-4" />
                 Profile
               </Button>
             </div>
