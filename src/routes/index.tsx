@@ -7,7 +7,6 @@ import NotFound from '@/pages/NotFound';
 import Index from '@/pages/Index';
 import DashboardLayout from '@/components/Layout/DashboardLayout';
 import Employees from '@/pages/Employees';
-import EmployeeList from '@/components/Employee/EmployeeList'; // Add this import
 
 export const router = createBrowserRouter([
   {
@@ -20,7 +19,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/employees",
-    element: <DashboardLayout><EmployeeList /></DashboardLayout>, // Use EmployeeList here
+    element: <DashboardLayout><Employees /></DashboardLayout>,
   },
   {
     path: "/profile",
