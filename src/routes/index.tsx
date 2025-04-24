@@ -4,11 +4,13 @@ import Dashboard from '@/pages/Dashboard';
 import { ProfileManager } from '@/components/Profile/ProfileManager';
 import { ScheduleManager } from '@/components/Schedule/ScheduleManager';
 import NotFound from '@/pages/NotFound';
+import Index from '@/pages/Index';
+import DashboardLayout from '@/components/Layout/DashboardLayout';
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Dashboard />,
+    element: <Index />,
   },
   {
     path: "/dashboard",
@@ -16,11 +18,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/profile",
-    element: <ProfileManager />,
+    element: <DashboardLayout><ProfileManager /></DashboardLayout>,
   },
   {
     path: "/schedule",
-    element: <ScheduleManager />,
+    element: <DashboardLayout><ScheduleManager /></DashboardLayout>,
   },
   {
     path: "*",
